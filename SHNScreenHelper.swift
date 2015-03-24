@@ -1,79 +1,142 @@
+//
+//  SHNScreenCategory.swift
+//
+//  Created by Shaun Harrison
+//  Copyright (c) 2015 Shaun Harrison.
+//
+
 import UIKit
 
+/**
+Provides a loose representation of the current screen size.
+
+Key metrics are intentionally fuzzy for future proofing, so
+correlations to existing devices are considered approximate.
+*/
 public enum SHNScreenCategory {
-	case Small // ~= iPhone 3.5"
-	case Medium // ~= iPhone 4"
-	case Large // ~= iPhone 4.7"
-	case XL // ~= iPhone 5.5"
-	case XXL // ~= iPad
+	/** Screen size ~= iPhone 3.5" */
+	case Small
+	
+	/** Screen size ~= iPhone 4" */
+	case Medium
+	
+	/** Screen size ~= iPhone 4.7" */
+	case Large
+	
+	/** Screen size ~= iPhone 5.5" */
+	case XL
+	
+	/** Screen size ~= iPad */
+	case XXL
+	
+	/** Determine a category for screen bounds */
+	public static func categoryForScreenBounds(bounds: CGRect) -> SHNScreenCategory {
+		let width = min(bounds.size.width, bounds.size.height)
+		
+		if width <= 340.0 {
+			let height = max(bounds.size.width, bounds.size.height)
+			
+			if height <= 510.0 {
+				return .Small
+			} else {
+				return .Medium
+			}
+		} else if width <= 400.0 {
+			return .Large
+		} else if width <= 680.0 {
+			return .XL
+		} else {
+			return .XXL
+		}
+	}
 }
 
+/**
+Get a conditional value based on the main screen category
+
+:param: smallOrMediumValue Value if screen category <= medium
+:param: largeOrXLOrXXLValue Value if screen category >= large
+*/
 public func SHNScreenCategoryGetValue<T>(smallOrMediumValue: T, largeOrXLOrXXLValue: T) -> T {
 	return SHNScreenCategoryGetValue(smallOrMediumValue, smallOrMediumValue, largeOrXLOrXXLValue, largeOrXLOrXXLValue, largeOrXLOrXXLValue)
 }
 
+/**
+Get a conditional value based on the main screen category
+
+:param: smallOrMediumValue Value if screen category <= medium
+:param: largeValue Value if screen category == large
+:param: xlOrXXLValue Value if screen category >= XL
+*/
 public func SHNScreenCategoryGetValue<T>(smallOrMediumValue: T, largeValue: T, xlOrXXLValue: T) -> T {
 	return SHNScreenCategoryGetValue(smallOrMediumValue, smallOrMediumValue, largeValue, xlOrXXLValue, xlOrXXLValue)
 }
 
+/**
+Get a conditional value based on the main screen category
+
+:param: smallOrMediumValue Value if screen category <= medium
+:param: largeValue Value if screen category == large
+:param: xlValue Value if screen category == XL
+:param: xxlValue Value if screen category == XXL
+*/
 public func SHNScreenCategoryGetValue<T>(smallOrMediumValue: T, largeValue: T, xlValue: T, xxlValue: T) -> T {
 	return SHNScreenCategoryGetValue(smallOrMediumValue, smallOrMediumValue, largeValue, xlValue, xxlValue)
 }
 
+/**
+Get a conditional value based on the main screen category
+
+:param: smallValue Value if screen category == small
+:param: mediumValue Value if screen category == medium
+:param: largeValue Value if screen category == large
+:param: xlValue Value if screen category == XL
+:param: xxlValue Value if screen category == XXL
+*/
 public func SHNScreenCategoryGetValue<T>(smallValue: T, mediumValue: T, largeValue: T, xlValue: T, xxlValue: T) -> T {
 	switch(UIScreen.mainScreen().category) {
-		case .XXL:
-			return xxlValue
-		case .XL:
-			return xlValue
-		case .Large:
-			return largeValue
-		case .Medium:
-			return mediumValue
-		case .Small:
-			return smallValue
-		default:
-			return smallValue
+	case .XXL:
+		return xxlValue
+	case .XL:
+		return xlValue
+	case .Large:
+		return largeValue
+	case .Medium:
+		return mediumValue
+	case .Small:
+		return smallValue
+	default:
+		return smallValue
 	}
 }
 
 public extension UIScreen {
-	private static var _hairline: CGFloat?
-	private static var _category: SHNScreenCategory?
-
+	private static var _hairline: [ Int: CGFloat ] = Dictionary()
+	private static var _category: [ Int: SHNScreenCategory ] = Dictionary()
+	
+	/** Get the hairline size for the current screen */
 	public var hairline: CGFloat {
-		if UIScreen._hairline == nil {
-			UIScreen._hairline = UIScreen.hairlineForScale(self.scale)
+		let hash = self.hash
+		
+		if UIScreen._hairline[hash] == nil {
+			UIScreen._hairline[hash] = UIScreen.hairlineForScale(self.scale)
 		}
 		
-		return UIScreen._hairline!
+		return UIScreen._hairline[hash]!
 	}
 	
+	/** Get the category for the current screen */
 	public var category: SHNScreenCategory {
-		if UIScreen._category == nil {
-			let bounds = self.bounds
-			let width = min(bounds.size.width, bounds.size.height)
-			
-			if width <= 340.0 {
-				let height = max(bounds.size.width, bounds.size.height)
-				
-				if height <= 510.0 {
-					UIScreen._category = SHNScreenCategory.Small
-				} else {
-					UIScreen._category = SHNScreenCategory.Medium
-				}
-			} else if width <= 400.0 {
-				UIScreen._category = SHNScreenCategory.Large
-			} else if width <= 680.0 {
-				UIScreen._category = SHNScreenCategory.XL
-			} else {
-				UIScreen._category = SHNScreenCategory.XXL
-			}
+		let hash = self.hash
+
+		if UIScreen._category[hash] == nil {
+			UIScreen._category[hash] = SHNScreenCategory.categoryForScreenBounds(self.bounds)
 		}
 		
-		return UIScreen._category!
+		return UIScreen._category[hash]!
 	}
 	
+	/** Get the hairline size for a given scale. */
 	public class func hairlineForScale(scale: CGFloat) -> CGFloat {
 		if scale <= 1.5 {
 			return 1.0
@@ -83,5 +146,5 @@ public extension UIScreen {
 			return 2.0 / scale
 		}
 	}
-
+	
 }
