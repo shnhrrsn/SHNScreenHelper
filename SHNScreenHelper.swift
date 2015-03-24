@@ -110,30 +110,33 @@ public func SHNScreenCategoryGetValue<T>(smallValue: T, mediumValue: T, largeVal
 	}
 }
 
+private struct UIScreenHolder {
+	private static var hairline: [ Int: CGFloat ] = Dictionary()
+	private static var category: [ Int: SHNScreenCategory ] = Dictionary()
+}
+
 public extension UIScreen {
-	private static var _hairline: [ Int: CGFloat ] = Dictionary()
-	private static var _category: [ Int: SHNScreenCategory ] = Dictionary()
 	
 	/** Get the hairline size for the current screen */
 	public var hairline: CGFloat {
 		let hash = self.hash
 		
-		if UIScreen._hairline[hash] == nil {
-			UIScreen._hairline[hash] = UIScreen.hairlineForScale(self.scale)
+		if UIScreenHolder.hairline[hash] == nil {
+			UIScreenHolder.hairline[hash] = UIScreen.hairlineForScale(self.scale)
 		}
 		
-		return UIScreen._hairline[hash]!
+		return UIScreenHolder.hairline[hash]!
 	}
 	
 	/** Get the category for the current screen */
 	public var category: SHNScreenCategory {
 		let hash = self.hash
 
-		if UIScreen._category[hash] == nil {
-			UIScreen._category[hash] = SHNScreenCategory.categoryForScreenBounds(self.bounds)
+		if UIScreenHolder.category[hash] == nil {
+			UIScreenHolder.category[hash] = SHNScreenCategory.categoryForScreenBounds(self.bounds)
 		}
 		
-		return UIScreen._category[hash]!
+		return UIScreenHolder.category[hash]!
 	}
 	
 	/** Get the hairline size for a given scale. */
