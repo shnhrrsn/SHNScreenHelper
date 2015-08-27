@@ -5,6 +5,8 @@
 //  Copyright (c) 2015 Shaun Harrison.
 //
 
+import UIKit
+
 /**
 Provides a loose representation of the current screen size.
 
@@ -14,26 +16,26 @@ correlations to existing devices are considered approximate.
 public enum SHNScreenCategory {
 	/** Screen size ~= iPhone 3.5" */
 	case Small
-	
+
 	/** Screen size ~= iPhone 4" */
 	case Medium
-	
+
 	/** Screen size ~= iPhone 4.7" */
 	case Large
-	
+
 	/** Screen size ~= iPhone 5.5" */
 	case XL
-	
+
 	/** Screen size ~= iPad */
 	case XXL
-	
+
 	/** Determine a category for screen bounds */
 	public static func categoryForScreenBounds(bounds: CGRect) -> SHNScreenCategory {
 		let width = min(bounds.size.width, bounds.size.height)
-		
+
 		if width <= 340.0 {
 			let height = max(bounds.size.width, bounds.size.height)
-			
+
 			if height <= 510.0 {
 				return .Small
 			} else {
@@ -93,17 +95,17 @@ Get a conditional value based on the main screen category
 */
 public func SHNScreenCategoryGetValue<T>(smallValue: T, mediumValue: T, largeValue: T, xlValue: T, xxlValue: T) -> T {
 	switch(UIScreen.mainScreen().category) {
-	case .XXL:
-		return xxlValue
-	case .XL:
-		return xlValue
-	case .Large:
-		return largeValue
-	case .Medium:
-		return mediumValue
-	case .Small:
-		return smallValue
-	default:
-		return smallValue
+		case .XXL:
+			return xxlValue
+		case .XL:
+			return xlValue
+		case .Large:
+			return largeValue
+		case .Medium:
+			return mediumValue
+		case .Small:
+			return smallValue
+		default:
+			return smallValue
 	}
 }
