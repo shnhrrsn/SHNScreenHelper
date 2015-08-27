@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
 	s.name         = "SHNScreenHelper"
-	s.version      = "1.0.0"
+	s.version      = "1.0.1"
 	s.summary      = "Utility helper for UIScreen."
 	s.homepage     = "https://github.com/shnhrrsn/SHNScreenHelper"
 	s.license      = "MIT"
