@@ -57,7 +57,7 @@ Get a conditional value based on the main screen category
 :param: smallOrMediumValue Value if screen category <= medium
 :param: largeOrXLOrXXLValue Value if screen category >= large
 */
-public func SHNScreenCategoryGetValue<T>(smallOrMediumValue: T, largeOrXLOrXXLValue: T) -> T {
+public func SHNScreenCategoryGetValue<T>(smallOrMediumValue: T, _ largeOrXLOrXXLValue: T) -> T {
 	return SHNScreenCategoryGetValue(smallOrMediumValue, smallOrMediumValue, largeOrXLOrXXLValue, largeOrXLOrXXLValue, largeOrXLOrXXLValue)
 }
 
@@ -68,7 +68,7 @@ Get a conditional value based on the main screen category
 :param: largeValue Value if screen category == large
 :param: xlOrXXLValue Value if screen category >= XL
 */
-public func SHNScreenCategoryGetValue<T>(smallOrMediumValue: T, largeValue: T, xlOrXXLValue: T) -> T {
+public func SHNScreenCategoryGetValue<T>(smallOrMediumValue: T, _ largeValue: T, _ xlOrXXLValue: T) -> T {
 	return SHNScreenCategoryGetValue(smallOrMediumValue, smallOrMediumValue, largeValue, xlOrXXLValue, xlOrXXLValue)
 }
 
@@ -80,7 +80,7 @@ Get a conditional value based on the main screen category
 :param: xlValue Value if screen category == XL
 :param: xxlValue Value if screen category == XXL
 */
-public func SHNScreenCategoryGetValue<T>(smallOrMediumValue: T, largeValue: T, xlValue: T, xxlValue: T) -> T {
+public func SHNScreenCategoryGetValue<T>(smallOrMediumValue: T, _ largeValue: T, _ xlValue: T, _ xxlValue: T) -> T {
 	return SHNScreenCategoryGetValue(smallOrMediumValue, smallOrMediumValue, largeValue, xlValue, xxlValue)
 }
 
@@ -93,8 +93,8 @@ Get a conditional value based on the main screen category
 :param: xlValue Value if screen category == XL
 :param: xxlValue Value if screen category == XXL
 */
-public func SHNScreenCategoryGetValue<T>(smallValue: T, mediumValue: T, largeValue: T, xlValue: T, xxlValue: T) -> T {
-	switch(UIScreen.mainScreen().category) {
+public func SHNScreenCategoryGetValue<T>(smallValue: T, _ mediumValue: T, _ largeValue: T, _ xlValue: T, _ xxlValue: T) -> T {
+	switch UIScreen.mainScreen().category {
 		case .XXL:
 			return xxlValue
 		case .XL:
@@ -104,8 +104,6 @@ public func SHNScreenCategoryGetValue<T>(smallValue: T, mediumValue: T, largeVal
 		case .Medium:
 			return mediumValue
 		case .Small:
-			return smallValue
-		default:
 			return smallValue
 	}
 }
